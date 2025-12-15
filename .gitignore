@@ -1,0 +1,15 @@
+# Visual Studio ve CMake gereksiz dosyalari
+.vs/
+out/
+build/
+x64/
+Debug/
+Release/
+*.user
+*.exe
+*.pdb
+*.ilk
+*.obj
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
