@@ -1,32 +1,36 @@
 #include <iostream>
-#include "../include/LightDevice.h"
-#include "../include/CriticalDevice.h"
+#include "../include/DeviceManager.h"
 
 int main() {
-    std::cout << "=== MSH_2 TEST BASLADI ===\n" << std::endl;
+    std::cout << "=== MSH_2 YONETICI TESTI ===\n" << std::endl;
 
-    // TEST 1: KOPYALAMA (PROTOTYPE)
-    std::cout << "--- 1. Prototype (Klonlama) Testi ---" << std::endl;
-    LightDevice* lamba1 = new LightDevice(1, "Salon Avize", 100, "Sari");
-    lamba1->PowerOn();
-    std::cout << "Orijinal: " << lamba1->GetStatus() << std::endl;
+    // 1. Yoneticiyi cagir (Singleton)
+    DeviceManager* manager = DeviceManager::getInstance();
 
-    // Kopyaliyoruz...
-    Device* lamba2 = lamba1->clone();
-    lamba2->SetId(2); // Yeni ID veriyoruz
-    std::cout << "Kopya:    " << lamba2->GetStatus() << std::endl;
+    // 2. Cihazlari Ekle (REQ8)
+    std::cout << ">> Cihazlar Ekleniyor..." << std::endl;
+    manager->AddDevice(DEVICE_LIGHT, 2, "Salon Isigi"); // 2 tane isik
+    manager->AddDevice(DEVICE_ALARM, 1, "Ana Alarm");   // 1 tane alarm
 
-    // TEST 2: KRITIK CIHAZ
-    std::cout << "\n--- 2. Kritik Cihaz Testi ---" << std::endl;
-    CriticalDevice* alarm = new CriticalDevice(99, "Yangin Alarmi", DEVICE_ALARM);
+    // 3. Listeyi Gor
+    manager->ListAllDevices();
 
-    std::cout << "Kullanici alarmi kapatmayi deniyor..." << std::endl;
-    alarm->PowerOff(); // Kapanmamali!
+    // 4. Cihazlari Yonet (REQ6)
+    std::cout << ">> Cihazlar Aciliyor..." << std::endl;
+    // Not: ID'ler 101, 102, 103 diye gidecek (kodda oyle ayarladik)
+    manager->PowerOnDevice(101);
+    manager->PowerOnDevice(103); // Alarm
 
-    // Temizlik
-    delete lamba1;
-    delete lamba2;
-    delete alarm;
+    // 5. Kritik Cihaz Kapatma Denemesi (LLR5)
+    std::cout << "\n>> Kritik Cihaz Kapatma Testi..." << std::endl;
+    manager->PowerOffDevice(103); // Alarm kapanmamali
+
+    // 6. Cihaz Silme (REQ8)
+    std::cout << "\n>> Cihaz Silme Testi..." << std::endl;
+    manager->RemoveDevice(102); // Ikinci isigi silelim
+
+    // Son Durum
+    manager->ListAllDevices();
 
     return 0;
 }
