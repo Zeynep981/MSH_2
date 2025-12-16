@@ -8,24 +8,26 @@ Device::Device(int id, const std::string& name, DeviceType type)
 Device::~Device() {}
 
 void Device::PowerOn() {
-    if (isOn) { // Eðer zaten açýksa
+    // Hata buradaydý, 'isOn' yerine 'isActive' olmalý
+    if (isActive) {
         std::cout << "[UYARI] " << GetName() << " zaten acik durumda. Tekrar acilamaz." << std::endl;
         return;
     }
 
-    // Loglama istersen: Logger::getInstance()->Log(GetName() + " acildi.");
-    isOn = true;
+    // Hata buradaydý, 'isOn' yerine 'isActive' olmalý
+    isActive = true;
     std::cout << "[ACIK] " << GetName() << " basariyla acildi." << std::endl;
 }
 
 void Device::PowerOff() {
-    if (!isOn) { // Eðer zaten kapalýysa
+    // Hata buradaydý, 'isOn' yerine 'isActive' olmalý
+    if (!isActive) {
         std::cout << "[UYARI] " << GetName() << " zaten kapali durumda. Tekrar kapatilamaz." << std::endl;
         return;
     }
 
-    // Loglama istersen: Logger::getInstance()->Log(GetName() + " kapatildi.");
-    isOn = false;
+    // Hata buradaydý, 'isOn' yerine 'isActive' olmalý
+    isActive = false;
     std::cout << "[KAPALI] " << GetName() << " basariyla kapatildi." << std::endl;
 }
 

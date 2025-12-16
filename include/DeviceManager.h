@@ -31,6 +31,8 @@ public:
     // Genel Durum Listeleme
     void ListAllDevices();
     void HandleFailure(int id);
+
+    Device* GetDevice(int id);
 };
 
 #endif

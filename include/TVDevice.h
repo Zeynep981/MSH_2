@@ -10,6 +10,8 @@ public:
 
     virtual Device* clone() const;
     virtual std::string GetStatus() const;
+
+    void SetChannel(int channel);
 };
 
 #endif

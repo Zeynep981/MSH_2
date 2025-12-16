@@ -14,6 +14,13 @@ public:
 
     virtual Device* clone() const;
     virtual std::string GetStatus() const;
+
+    // YENI: Kapaliyken ayar yapilmasini engelleyecek fonksiyon
+    void SetBrightness(int level);
+
+    // Opsiyonel: Renk ve Parlaklik almak icin
+    int GetBrightness() const { return brightness; }
+    std::string GetColor() const { return color; }
 };
 
 #endif

@@ -135,7 +135,7 @@ void DeviceManager::ListAllDevices() {
 }
 
 void DeviceManager::HandleFailure(int id) {
-    // 1. Loglama servisine ulas
+    // 1. Logger servisini al
     Logger* logger = Logger::getInstance();
 
     // 2. Bildirim servisini olustur
@@ -144,16 +144,22 @@ void DeviceManager::HandleFailure(int id) {
     bool found = false;
     for (size_t i = 0; i < devices.size(); ++i) {
         if (devices[i]->GetId() == id) {
-            // LLR14: Durumu Inaktif yap
+
+            // LLR14: Durumu Inaktif yap (isFunctional = false)
             devices[i]->SetFunctional(false);
 
+            // --> YENÝ EKLENEN KISIM: ARIZADA OTOMATÝK KAPATMA <--
+            devices[i]->PowerOff();
+            std::cout << "\n[ACIL DURUM] Ariza tespit edildi! " << devices[i]->GetName() << " otomatik olarak kapatildi." << std::endl;
+            // ---------------------------------------------------
+
             // Logla
-           // SSTR yerine to_string_98 kullaniyoruz
-            std::string logMsg = "Ariza Tespiti: " + devices[i]->GetName() + " (ID: " + to_string_98(id) + ")";
+            // SSTR yerine to_string_98 kullaniyoruz
+            std::string logMsg = "Ariza Tespiti: " + devices[i]->GetName() + " (ID: " + to_string_98(id) + "). Otomatik kapatma uygulandi.";
             logger->Log(logMsg);
 
             // LLR15: Kullaniciya SMS gonder
-            std::string userMsg = devices[i]->GetName() + " failure.";
+            std::string userMsg = devices[i]->GetName() + " failure ve otomatik olarak kapatildi.";
             notifyService.NotifyUser(devices[i]->GetNotificationType(), userMsg);
 
             found = true;
@@ -165,4 +171,13 @@ void DeviceManager::HandleFailure(int id) {
         // SSTR yerine to_string_98 kullaniyoruz
         logger->Log("HATA: Ariza bildirilen ID bulunamadi: " + to_string_98(id));
     }
+}
+
+Device* DeviceManager::GetDevice(int id) {
+    for (size_t i = 0; i < devices.size(); ++i) {
+        if (devices[i]->GetId() == id) {
+            return devices[i];
+        }
+    }
+    return NULL; // Bulamazsa NULL doner
 }
