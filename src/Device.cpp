@@ -8,17 +8,25 @@ Device::Device(int id, const std::string& name, DeviceType type)
 Device::~Device() {}
 
 void Device::PowerOn() {
-    if (!isFunctional) {
-        std::cout << "[ARIZA] " << name << " arizali, acilamiyor." << std::endl;
+    if (isOn) { // Eðer zaten açýksa
+        std::cout << "[UYARI] " << GetName() << " zaten acik durumda. Tekrar acilamaz." << std::endl;
         return;
     }
-    isActive = true;
-    std::cout << name << " (" << id << ") acildi." << std::endl;
+
+    // Loglama istersen: Logger::getInstance()->Log(GetName() + " acildi.");
+    isOn = true;
+    std::cout << "[ACIK] " << GetName() << " basariyla acildi." << std::endl;
 }
 
 void Device::PowerOff() {
-    isActive = false;
-    std::cout << name << " (" << id << ") kapatildi." << std::endl;
+    if (!isOn) { // Eðer zaten kapalýysa
+        std::cout << "[UYARI] " << GetName() << " zaten kapali durumda. Tekrar kapatilamaz." << std::endl;
+        return;
+    }
+
+    // Loglama istersen: Logger::getInstance()->Log(GetName() + " kapatildi.");
+    isOn = false;
+    std::cout << "[KAPALI] " << GetName() << " basariyla kapatildi." << std::endl;
 }
 
 std::string Device::GetStatus() const {

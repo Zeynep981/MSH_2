@@ -62,12 +62,32 @@ void DeviceManager::AddDevice(DeviceType type, int count, const std::string& bas
 }
 
 void DeviceManager::RemoveDevice(int id) {
-    // Listede cihaz arama (Iterator ile)
+    // ... (For döngüsü baþlangýcý)
+
     for (std::vector<Device*>::iterator it = devices.begin(); it != devices.end(); ++it) {
         if ((*it)->GetId() == id) {
+
+            // --> KRÝTÝK CÝHAZ KONTROLÜ <--
+            std::string name = (*it)->GetName();
+
+            // Cihaz adýnda 'Alarm' veya 'Dedektor' geçiyorsa silmeyi engelle.
+            if (name.find("Alarm") != std::string::npos ||
+                name.find("Dedektor") != std::string::npos ||
+                name.find("Detector") != std::string::npos) { // Ýngilizce versiyonunu da ekleyelim.
+
+                std::cout << "\n[GÜVENLÝK UYARISI] " << name << " kritik bir cihazdir ve sistemden SILINEMEZ!" << std::endl;
+
+                // Loglayalým:
+                Logger::getInstance()->Log("GUVENLIK: Kritik cihaz silme girisimi engellendi: " + name);
+
+                return; // Silme iþlemi yapýlmadan fonksiyondan çýk.
+            }
+            // --> KONTROL BÝTÝÞÝ <--
+
+            // Silme iþlemi (sadece kritik deðilse buraya düþer)
             std::cout << "[YONETICI] Siliniyor: " << (*it)->GetName() << std::endl;
-            delete* it; // Hafizadan sil
-            devices.erase(it); // Listeden sil
+            delete* it;
+            devices.erase(it);
             return;
         }
     }
