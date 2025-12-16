@@ -49,6 +49,9 @@ public:
 
     // LLR18: Prototype Pattern (Klonlama)
     virtual Device* clone() const = 0;
+
+    void SetFunctional(bool status);
+    NotificationType GetNotificationType() const;
 };
 
 #endif

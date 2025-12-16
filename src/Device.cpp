@@ -31,3 +31,11 @@ int Device::GetId() const { return id; }
 void Device::SetId(int newId) { id = newId; }
 std::string Device::GetName() const { return name; }
 void Device::SetNotificationType(NotificationType type) { notificationType = type; }
+
+void Device::SetFunctional(bool status) {
+    isFunctional = status;
+}
+
+NotificationType Device::GetNotificationType() const {
+    return notificationType;
+}

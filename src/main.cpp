@@ -2,32 +2,25 @@
 #include "../include/DeviceManager.h"
 
 int main() {
-    std::cout << "=== MSH_2 YONETICI TESTI ===\n" << std::endl;
-
-    // 1. Yoneticiyi cagir (Singleton)
+    std::cout << "=== MSH_2 FINAL TEST ===\n" << std::endl;
     DeviceManager* manager = DeviceManager::getInstance();
 
-    // 2. Cihazlari Ekle (REQ8)
-    std::cout << ">> Cihazlar Ekleniyor..." << std::endl;
-    manager->AddDevice(DEVICE_LIGHT, 2, "Salon Isigi"); // 2 tane isik
-    manager->AddDevice(DEVICE_ALARM, 1, "Ana Alarm");   // 1 tane alarm
+    // 1. Cihazlari Ekle
+    manager->AddDevice(DEVICE_LIGHT, 1, "Salon Lambasi"); // ID 101
+    manager->AddDevice(DEVICE_DETECTOR, 1, "Gaz Sensoru"); // ID 102 (Kritik)
 
-    // 3. Listeyi Gor
     manager->ListAllDevices();
 
-    // 4. Cihazlari Yonet (REQ6)
-    std::cout << ">> Cihazlar Aciliyor..." << std::endl;
-    // Not: ID'ler 101, 102, 103 diye gidecek (kodda oyle ayarladik)
+    // 2. Normal Kullanim
     manager->PowerOnDevice(101);
-    manager->PowerOnDevice(103); // Alarm
 
-    // 5. Kritik Cihaz Kapatma Denemesi (LLR5)
-    std::cout << "\n>> Kritik Cihaz Kapatma Testi..." << std::endl;
-    manager->PowerOffDevice(103); // Alarm kapanmamali
+    // 3. SENARYO: Cihaz Bozuluyor (REQ9 Testi)
+    std::cout << ">>> OLAY: Salon Lambasi patladi!" << std::endl;
+    manager->HandleFailure(101);
 
-    // 6. Cihaz Silme (REQ8)
-    std::cout << "\n>> Cihaz Silme Testi..." << std::endl;
-    manager->RemoveDevice(102); // Ikinci isigi silelim
+    // 4. Bozuk Cihazi Acma Denemesi
+    std::cout << ">>> Kullanici bozuk lambayi acmayi deniyor..." << std::endl;
+    manager->PowerOnDevice(101); // "Arizali oldugu icin acilamiyor" demeli
 
     // Son Durum
     manager->ListAllDevices();

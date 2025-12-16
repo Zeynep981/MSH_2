@@ -30,6 +30,7 @@ public:
 
     // Genel Durum Listeleme
     void ListAllDevices();
+    void HandleFailure(int id);
 };
 
 #endif

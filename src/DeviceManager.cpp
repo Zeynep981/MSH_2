@@ -1,7 +1,17 @@
 #include "../include/DeviceManager.h"
 #include "../include/DeviceFactory.h"
 #include "../include/DeviceConfig.h"
+#include "../include/Logger.h"
+#include "../include/NotificationService.h"
 #include <iostream>
+
+#include <sstream>
+template <typename T>
+std::string to_string_98(const T& n) {
+    std::ostringstream stm;
+    stm << n;
+    return stm.str();
+}
 
 // Baslangicta bos
 DeviceManager* DeviceManager::instance = NULL;
@@ -74,4 +84,36 @@ void DeviceManager::ListAllDevices() {
         std::cout << devices[i]->GetStatus() << std::endl;
     }
     std::cout << "--------------------\n" << std::endl;
+}
+void DeviceManager::HandleFailure(int id) {
+    // 1. Loglama servisine ulas
+    Logger* logger = Logger::getInstance();
+
+    // 2. Bildirim servisini olustur
+    NotificationService notifyService;
+
+    bool found = false;
+    for (size_t i = 0; i < devices.size(); ++i) {
+        if (devices[i]->GetId() == id) {
+            // LLR14: Durumu Inaktif yap
+            devices[i]->SetFunctional(false);
+
+            // Logla
+           // SSTR yerine to_string_98 kullaniyoruz
+            std::string logMsg = "Ariza Tespiti: " + devices[i]->GetName() + " (ID: " + to_string_98(id) + ")";
+            logger->Log(logMsg);
+
+            // LLR15: Kullaniciya SMS gonder
+            std::string userMsg = devices[i]->GetName() + " failure.";
+            notifyService.NotifyUser(devices[i]->GetNotificationType(), userMsg);
+
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        // SSTR yerine to_string_98 kullaniyoruz
+        logger->Log("HATA: Ariza bildirilen ID bulunamadi: " + to_string_98(id));
+    }
 }
