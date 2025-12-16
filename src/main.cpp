@@ -8,7 +8,7 @@ int main() {
     // 1. Cihazlari Ekle
     manager->AddDevice(DEVICE_LIGHT, 1, "Salon Lambasi"); // ID 101
     manager->AddDevice(DEVICE_DETECTOR, 1, "Gaz Sensoru"); // ID 102 (Kritik)
-
+    manager->AddDevice(DEVICE_TV, 1, "Samsung TV");
     manager->ListAllDevices();
 
     // 2. Normal Kullanim

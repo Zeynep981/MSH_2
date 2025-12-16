@@ -1,6 +1,9 @@
 #include "../include/DeviceFactory.h"
 #include "../include/LightDevice.h"
-#include "../include/CriticalDevice.h"
+#include "../include/TVDevice.h"       // Yeni
+#include "../include/CameraDevice.h"   // Yeni
+#include "../include/AlarmDevice.h"    // Yeni
+#include "../include/DetectorDevice.h" // Yeni
 #include <iostream>
 
 Device* DeviceFactory::createDevice(DeviceType type, const DeviceConfig& config) {
@@ -8,20 +11,25 @@ Device* DeviceFactory::createDevice(DeviceType type, const DeviceConfig& config)
 
     switch (type) {
     case DEVICE_LIGHT:
-        // Isik icin config icindeki renk ve parlakligi kullaniyoruz
         newDevice = new LightDevice(config.id, config.name, config.brightness, config.color);
         break;
 
-    case DEVICE_ALARM:
-    case DEVICE_DETECTOR:
-        // Kritik cihazlar (Alarm/Dedektor)
-        newDevice = new CriticalDevice(config.id, config.name, type);
+    case DEVICE_TV:
+        newDevice = new TVDevice(config.id, config.name);
         break;
 
-    case DEVICE_TV:
     case DEVICE_CAMERA:
-        // Henuz bu siniflari yazmadik, simdilik bos geciyoruz veya hata veriyoruz
-        std::cout << "[FABRIKA] Uyari: TV ve Kamera henuz yapilmadi!" << std::endl;
+        newDevice = new CameraDevice(config.id, config.name);
+        break;
+
+    case DEVICE_ALARM:
+        // Artik direkt CriticalDevice degil, AlarmDevice uretiyoruz
+        newDevice = new AlarmDevice(config.id, config.name);
+        break;
+
+    case DEVICE_DETECTOR:
+        // Artik direkt CriticalDevice degil, DetectorDevice uretiyoruz
+        newDevice = new DetectorDevice(config.id, config.name);
         break;
 
     default:
