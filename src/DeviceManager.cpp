@@ -28,19 +28,35 @@ DeviceManager* DeviceManager::getInstance() {
 }
 
 void DeviceManager::AddDevice(DeviceType type, int count, const std::string& baseName) {
-    for (int i = 0; i < count; ++i) {
-        // Her yeni cihaz icin essiz bir ID uretiyoruz (Simdilik basitce 100 + size)
-        int newId = 100 + (int)devices.size() + 1;
+    if (count <= 0) return;
 
-        // Fabrika icin siparis fisini hazirla
-        DeviceConfig config(newId, baseName);
+    // 1. ILK CIHAZI FABRIKADAN URET (Master Copy)
+    int firstId = 100 + (int)devices.size() + 1;
+    DeviceConfig config(firstId, baseName);
 
-        // Fabrikayi cagir
-        Device* newDevice = DeviceFactory::createDevice(type, config);
+    // Ilk cihaz icin ozel ayar (Ornegin main'den gelen degerler buraya tasinabilir)
+    // Simdilik varsayilan ayarlarla uretiyoruz.
+    Device* prototypeDevice = DeviceFactory::createDevice(type, config);
 
-        if (newDevice != NULL) {
-            devices.push_back(newDevice); // Listeye ekle
-            std::cout << "[YONETICI] Eklendi: " << newDevice->GetName() << " (ID: " << newId << ")" << std::endl;
+    if (prototypeDevice != NULL) {
+        devices.push_back(prototypeDevice);
+        std::cout << "[YONETICI] Eklendi (Orijinal): " << prototypeDevice->GetName() << " (ID: " << firstId << ")" << std::endl;
+
+        // 2. GERI KALANLARI KOPYALA (PROTOTYPE PATTERN - LLR18)
+        for (int i = 1; i < count; ++i) {
+            // BURASI KRITIK: Factory degil, clone() kullaniyoruz!
+            Device* clonedDevice = prototypeDevice->clone();
+
+            // LLR19: Benzersiz Kimlik ve Ad Guncellemesi
+            int newId = 100 + (int)devices.size() + 1;
+            clonedDevice->SetId(newId);
+
+            // Isim guncelleme (Ornek: Lamba -> Lamba_2)
+            // Not: Device sinifina SetName eklememiz gerekebilir, yoksa eski isim kalir.
+            // Simdilik sadece ID degisiyor.
+
+            devices.push_back(clonedDevice);
+            std::cout << "[YONETICI] Eklendi (Kopya): " << clonedDevice->GetName() << " (ID: " << newId << ")" << std::endl;
         }
     }
 }
@@ -79,12 +95,25 @@ void DeviceManager::PowerOffDevice(int id) {
 }
 
 void DeviceManager::ListAllDevices() {
+    // 1. Cihaz listesi bos mu kontrol et
+    if (devices.empty()) {
+        std::cout << "\n[UYARI] Ekli bir cihaz yoktur." << std::endl;
+
+        // 2. Log dosyasina yaz
+        // Logger singleton yapida oldugu icin boyle cagiriyoruz:
+        Logger::getInstance()->Log("Uyari: Listelenecek cihaz bulunamadi.");
+
+        return; // Listelenecek bir sey olmadigi icin cikiyoruz
+    }
+
+    // 3. Bos degilse standart listeleme devam eder
     std::cout << "\n--- TUM CIHAZLAR ---" << std::endl;
     for (size_t i = 0; i < devices.size(); ++i) {
         std::cout << devices[i]->GetStatus() << std::endl;
     }
     std::cout << "--------------------\n" << std::endl;
 }
+
 void DeviceManager::HandleFailure(int id) {
     // 1. Loglama servisine ulas
     Logger* logger = Logger::getInstance();

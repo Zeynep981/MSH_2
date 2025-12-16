@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include "DevicePrototype.h"
 
 // LLR13: Bildirim Tipleri
 enum NotificationType {
@@ -10,6 +11,8 @@ enum NotificationType {
     NOTIFY_ALARM,
     NOTIFY_SMS
 };
+
+
 
 // Cihaz Tipleri
 enum DeviceType {

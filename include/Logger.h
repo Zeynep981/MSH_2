@@ -3,19 +3,21 @@
 
 #include <string>
 #include <iostream>
+#include <fstream> // YENI: Dosya islemleri icin gerekli
 
-// SINGLETON: Sistemde tek bir log defteri olur.
 class Logger {
 private:
     static Logger* instance;
+    std::ofstream logFile; // YENI: Log dosyamiz
 
-    // Private constructor (Kimse kafasina gore new Logger() diyemesin)
-    Logger();
+    Logger(); // Constructor'da dosyayi acacagiz
 
 public:
     static Logger* getInstance();
 
-    // Log mesajini yazdiran fonksiyon
+    // YENI: Destructor (Program kapanirken dosyayi kapatmak icin)
+    ~Logger();
+
     void Log(const std::string& message);
 };
 
